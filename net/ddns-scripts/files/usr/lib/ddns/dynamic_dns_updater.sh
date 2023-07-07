@@ -348,8 +348,8 @@ ERR_LAST=$?
 write_log 6 "Starting main loop at $(eval $DATE_PROG)"
 while : ; do
 
-	get_current_ip CURRENT_IP		# read current IP
-	[ $use_ipv6 -eq 1 ] && expand_ipv6 "$CURRENT_IP" CURRENT_IP	# on IPv6 we use expanded version
+	get_current_ip CURRENT_IP_RAW		# read current IP
+	[ $use_ipv6 -eq 1 ] && expand_ipv6 "$CURRENT_IP_RAW" CURRENT_IP	# on IPv6 we use expanded version
 
 	# prepare update
 	# never updated or forced immediate then NEXT_TIME = 0
@@ -371,7 +371,7 @@ while : ; do
 
 		ERR_LAST=0
 		[ $DRY_RUN -eq 0 ] && {
-			send_update "$CURRENT_IP"
+			send_update "$CURRENT_IP_RAW"
 			ERR_LAST=$?	# save return value
 		}
 
@@ -385,8 +385,8 @@ while : ; do
 			get_uptime LAST_TIME		# we send update, so
 			echo $LAST_TIME > $UPDFILE	# save LASTTIME to file
 			[ "$CURRENT_IP" != "$REGISTERED_IP" ] \
-				&& write_log 6 "Update successful - IP '$CURRENT_IP' send" \
-				|| write_log 6 "Forced update successful - IP: '$CURRENT_IP' send"
+				&& write_log 6 "Update successful - IP '$CURRENT_IP_RAW' send" \
+				|| write_log 6 "Forced update successful - IP: '$CURRENT_IP_RAW' send"
 		elif [ $ERR_LAST -eq 127 ]; then
 			write_log 3 "No update send to DDNS Provider"
 		else
